@@ -16,6 +16,7 @@ import org.springframework.beans.BeanUtils;
 @AllArgsConstructor
 public class ClienteResponse {
 
+    private Long id;
     private String cpf;
     private String mcc;
     private String nome;
@@ -28,6 +29,12 @@ public class ClienteResponse {
     private ETipoCliente tipoCliente;
 
     public static ClienteResponse of(Cliente request) {
+        var cliente = new ClienteResponse();
+        BeanUtils.copyProperties(request, cliente);
+        return cliente;
+    }
+
+    public static ClienteResponse of(ClientePessoaJuridicaRequest request) {
         var cliente = new ClienteResponse();
         BeanUtils.copyProperties(request, cliente);
         return cliente;

@@ -15,23 +15,27 @@ public class ClienteService {
 
     private final ClienteRepository clienteRepository;
 
+    private final ClienteFilaService filaService;;
+
     @Autowired
-    public ClienteService(ClienteRepository clienteRepository) {
+    public ClienteService(ClienteRepository clienteRepository, ClienteFilaService filaService) {
         this.clienteRepository = clienteRepository;
+        this.filaService = filaService;
     }
 
     public ClientePessoaFisicaResponse criarClientePf(ClientePessoaFisicaRequest clienteRequest) {
         validarCpf(clienteRequest);
         var pf = Cliente.of(clienteRequest);
         clienteRepository.save(pf);
-
-        return ClientePessoaFisicaResponse.of(clienteRequest);
+        filaService.enfileirar(ClienteResponse.of(pf));
+       return  ClientePessoaFisicaResponse.of(clienteRequest);
     }
 
     public ClientePessoaJuridicaResponse criarClientePj(ClientePessoaJuridicaRequest clienteRequest) {
         validarCnpj(clienteRequest);
-        var pf = Cliente.of(clienteRequest);
-        clienteRepository.save(pf);
+        var pj = Cliente.of(clienteRequest);
+        clienteRepository.save(pj);
+        filaService.enfileirar(ClienteResponse.of(pj));
 
         return ClientePessoaJuridicaResponse.of(clienteRequest);
     }
@@ -41,8 +45,9 @@ public class ClienteService {
                 orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
         validarCnpjParaAtualizacao(clienteRequest, clienteExistente);
         clienteExistente.atualizarClientePj(clienteRequest);
-        clienteRepository.save(clienteExistente);
+        var cliente = clienteRepository.save(clienteExistente);
 
+        filaService.atualizarClienteNaFila(cliente);
         return ClientePessoaJuridicaResponse.of(clienteExistente);
     }
 
@@ -51,8 +56,9 @@ public class ClienteService {
                 orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
         validarCpfParaAtualizacao(clienteRequest, clienteExistente);
         clienteExistente.atualizarClientePf(clienteRequest);
-        clienteRepository.save(clienteExistente);
+        var cliente = clienteRepository.save(clienteExistente);
 
+        filaService.atualizarClienteNaFila(cliente);
         return ClientePessoaFisicaResponse.of(clienteExistente);
     }
 
