@@ -6,6 +6,7 @@ import br.com.desafio.precadastroclientes.cliente.model.dto.ClientePessoaFisicaR
 import br.com.desafio.precadastroclientes.cliente.model.dto.ClientePessoaFisicaResponse;
 import br.com.desafio.precadastroclientes.cliente.model.dto.ClientePessoaJuridicaRequest;
 import br.com.desafio.precadastroclientes.cliente.repository.ClienteRepository;
+import br.com.desafio.precadastroclientes.cliente.service.ClienteFilaService;
 import br.com.desafio.precadastroclientes.cliente.service.ClienteService;
 import org.hibernate.boot.beanvalidation.IntegrationException;
 import org.junit.jupiter.api.Test;
@@ -25,10 +26,13 @@ import static org.mockito.Mockito.*;
 public class ClienteServiceTest {
 
     @InjectMocks
-    private ClienteService clienteService; // Suponho que o nome da sua classe de serviço seja ClienteService
+    private ClienteService clienteService;
 
     @Mock
     private ClienteRepository clienteRepository;
+
+    @Mock
+    private ClienteFilaService clienteFilaService;
 
     @Test
     public void criarClientePf_deveCriarClientePf_seCpfValido() {
