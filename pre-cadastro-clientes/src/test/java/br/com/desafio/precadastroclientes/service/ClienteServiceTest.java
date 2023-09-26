@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 public class ClienteServiceTest {
 
     @InjectMocks
-    private ClienteService clienteService; // Suponho que o nome da sua classe de serviço seja ClienteService
+    private ClienteService clienteService;
 
     @Mock
     private ClienteRepository clienteRepository;
