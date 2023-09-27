@@ -26,7 +26,7 @@ public class SqsService {
         this.objectMapper = objectMapper;
     }
 
-    public void sendMessagePf(Cliente dto)  {
+    public void sendMessage(Cliente dto)  {
         try {
             var messageBody = objectMapper.writeValueAsString(dto);
             sqsClient.sendMessage(SendMessageRequest.builder()

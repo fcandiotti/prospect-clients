@@ -27,7 +27,7 @@ public class ClienteService {
         validarCpf(clienteRequest);
         var pf = Cliente.of(clienteRequest);
         clienteRepository.save(pf);
-        sqsService.sendMessagePf(pf);
+        sqsService.sendMessage(pf);
        return  ClientePessoaFisicaResponse.of(clienteRequest);
     }
 
@@ -35,7 +35,7 @@ public class ClienteService {
         validarCnpj(clienteRequest);
         var pj = Cliente.of(clienteRequest);
         clienteRepository.save(pj);
-        sqsService.sendMessagePf(pj);
+        sqsService.sendMessage(pj);
 
         return ClientePessoaJuridicaResponse.of(clienteRequest);
     }
