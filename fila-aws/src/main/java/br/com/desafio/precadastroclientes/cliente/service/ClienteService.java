@@ -1,5 +1,6 @@
 package br.com.desafio.precadastroclientes.cliente.service;
 
+import br.com.desafio.precadastroclientes.cliente.aws.SqsService;
 import br.com.desafio.precadastroclientes.cliente.model.Cliente;
 import br.com.desafio.precadastroclientes.cliente.model.dto.*;
 import br.com.desafio.precadastroclientes.cliente.repository.ClienteRepository;
@@ -14,16 +15,19 @@ import java.util.stream.Collectors;
 public class ClienteService {
 
     private final ClienteRepository clienteRepository;
+    private final SqsService sqsService;
 
     @Autowired
-    public ClienteService(ClienteRepository clienteRepository) {
+    public ClienteService(ClienteRepository clienteRepository, SqsService sqsService) {
         this.clienteRepository = clienteRepository;
+        this.sqsService = sqsService;
     }
 
     public ClientePessoaFisicaResponse criarClientePf(ClientePessoaFisicaRequest clienteRequest) {
         validarCpf(clienteRequest);
         var pf = Cliente.of(clienteRequest);
         clienteRepository.save(pf);
+        sqsService.sendMessagePf(pf);
        return  ClientePessoaFisicaResponse.of(clienteRequest);
     }
 
@@ -31,6 +35,7 @@ public class ClienteService {
         validarCnpj(clienteRequest);
         var pj = Cliente.of(clienteRequest);
         clienteRepository.save(pj);
+        sqsService.sendMessagePf(pj);
 
         return ClientePessoaJuridicaResponse.of(clienteRequest);
     }
@@ -40,7 +45,7 @@ public class ClienteService {
                 orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
         validarCnpjParaAtualizacao(clienteRequest, clienteExistente);
         clienteExistente.atualizarClientePj(clienteRequest);
-        var cliente = clienteRepository.save(clienteExistente);
+        clienteRepository.save(clienteExistente);
 
         return ClientePessoaJuridicaResponse.of(clienteExistente);
     }
@@ -50,7 +55,7 @@ public class ClienteService {
                 orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
         validarCpfParaAtualizacao(clienteRequest, clienteExistente);
         clienteExistente.atualizarClientePf(clienteRequest);
-        var cliente = clienteRepository.save(clienteExistente);
+        clienteRepository.save(clienteExistente);
 
         return ClientePessoaFisicaResponse.of(clienteExistente);
     }
