@@ -1,0 +1,7 @@
+version: '3.8'
+
+services:
+  my-app:
+    image: docker.io/fcandiotti/fila-atendimento:1.0.1
+    ports:
+      - "8080:8080"
