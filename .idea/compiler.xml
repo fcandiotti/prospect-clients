@@ -7,10 +7,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="fila-atendimento" />
+        <module name="pre-cadastro-clientes" />
+        <module name="fila-aws" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="fila-atendimento (1)" target="17" />
+      <module name="fila-atendimento (2)" target="17" />
       <module name="pre-cadastro-clientes (1)" target="17" />
       <module name="pre-cadastro-clientes (2)" target="17" />
     </bytecodeTargetLevel>
@@ -18,6 +21,9 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="fila-atendimento" options="-parameters" />
+      <module name="fila-atendimento (1)" options="-parameters" />
+      <module name="fila-atendimento (2)" options="-parameters" />
+      <module name="fila-aws" options="-parameters" />
       <module name="pre-cadastro-clientes" options="-parameters" />
       <module name="pre-cadastro-clientes (1)" options="-parameters" />
       <module name="pre-cadastro-clientes (2)" options="-parameters" />

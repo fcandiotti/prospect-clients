@@ -15,19 +15,15 @@ public class ClienteService {
 
     private final ClienteRepository clienteRepository;
 
-    private final ClienteFilaService filaService;;
-
     @Autowired
-    public ClienteService(ClienteRepository clienteRepository, ClienteFilaService filaService) {
+    public ClienteService(ClienteRepository clienteRepository) {
         this.clienteRepository = clienteRepository;
-        this.filaService = filaService;
     }
 
     public ClientePessoaFisicaResponse criarClientePf(ClientePessoaFisicaRequest clienteRequest) {
         validarCpf(clienteRequest);
         var pf = Cliente.of(clienteRequest);
         clienteRepository.save(pf);
-        filaService.enfileirar(ClienteResponse.of(pf));
        return  ClientePessoaFisicaResponse.of(clienteRequest);
     }
 
@@ -35,7 +31,6 @@ public class ClienteService {
         validarCnpj(clienteRequest);
         var pj = Cliente.of(clienteRequest);
         clienteRepository.save(pj);
-        filaService.enfileirar(ClienteResponse.of(pj));
 
         return ClientePessoaJuridicaResponse.of(clienteRequest);
     }
@@ -47,7 +42,6 @@ public class ClienteService {
         clienteExistente.atualizarClientePj(clienteRequest);
         var cliente = clienteRepository.save(clienteExistente);
 
-        filaService.atualizarClienteNaFila(cliente);
         return ClientePessoaJuridicaResponse.of(clienteExistente);
     }
 
@@ -58,7 +52,6 @@ public class ClienteService {
         clienteExistente.atualizarClientePf(clienteRequest);
         var cliente = clienteRepository.save(clienteExistente);
 
-        filaService.atualizarClienteNaFila(cliente);
         return ClientePessoaFisicaResponse.of(clienteExistente);
     }
 

@@ -6,6 +6,7 @@
       <list>
         <option value="$PROJECT_DIR$/pre-cadastro-clientes/pom.xml" />
         <option value="$PROJECT_DIR$/fila-atendimento/pom.xml" />
+        <option value="$PROJECT_DIR$/fila-aws/pom.xml" />
       </list>
     </option>
   </component>
