@@ -12,7 +12,7 @@
 - Caso a fila esteja vazia, sera exibida a mensagem retornando o status 404.
 ---
 4) Implementar cobertura de 70% de testes unitários
-- Cobertura de 77% segundo IntelliJ
+- Cobertura de 75% segundo IntelliJ
 ---
 ### Subi a imagem do projeto para o docker hub, para facilitar na hora de executar o projeto, basta o diretorio raiz e executar: 
 *docker-compose up* 
