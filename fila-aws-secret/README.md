@@ -1,14 +1,23 @@
-###Technical Debt: Escalabilidade da Fila de atendimento
-* Swagger: http://localhost:8080/v3/api-docs (Importar no postman)
+### Technical Debt: Segurança da Informação
+* Swagger: http://44.211.42.141:8080/v3/api-docs (Importar no postman)
 ---
-1) Desenhe e implemente uma nova solução para a fila de atendimento, utilizando a
-solução de mensageria SQS da AWS.
-- Foi implementada uma fila SQS da AWS, usando o login fornecido pela ADA, ao cadastrar um cliente PF/PJ, o mesmo é enviado para fila, sendo consumido pelo endpoint cadastrado na aplicação, também foi adicionado uma logica para apagar o cliente da fila apos o mesmo ser consumido.
+a) identifique um débito técnico de Segurança da Informação na aplicação
+- Credenciais do banco de dados e da AWS expostas na aplicação.
 ---
-### Subi a imagem do projeto para o docker hub, para facilitar na hora de executar o projeto, basta o diretorio raiz e executar: 
-*docker-compose up* 
+b) detalhe o débito técnico identificado, informando a criticidade e possíveis
+consequências
+- Se alguém obtiver acesso às suas credenciais, poderá acessar, modificar ou até mesmo deletar dados no seu banco de dados. Na AWS, eles poderiam potencialmente controlar todos os recursos associados àquelas credenciais, o que poderia levar a situações catastróficas, como a eliminação de máquinas virtuais, bancos de dados ou outros serviços.
+---
+c) planeje as atividades técnicas para o desenvolvimento da solução
+- Poderia ter colocado as credenciais em variáveis de ambiente, assim, mesmo compartilhando a API, as credenciais estariam protegidas. Porém, nesse caso em específico, acredito que não seria muito útil, pois teria que informar no README as credenciais para que fosse possível testar a aplicação. Com isso, foi feito o seguinte:
+1) Removido as credenciais do application.properties. 
+2) Criado o Secrets Key Manager na AWS.
+3) Adicionado as permissões para ele.
+4) Hospedado a aplicação no EC2 da AWS. 
+5) Configurado a aplicação para fazer a requisição dos dados do banco e da AWS para o Secrets Key Manager. 
+6) Com isso, nossas credenciais estão 100% protegidas."
+---
 
-Ou se preferir, subir direto a imagem:
-
-*docker run -p 8080:8080  fcandiotti/fila-aws:1.0.0*
-
+### Informaçoes: 
+1) IP para teste: http://44.211.42.141:8080/endpoints (Collection do swagger para importar no postman está na primeira linha deste readme)
+2) Esta aplicação não tem imagem no docker pois a mesma ja se encontra hospedada em um EC2.
