@@ -27,6 +27,16 @@
         </dependency>
 
         <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20230618</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
+        <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <version>2.0.1.Final</version>
@@ -36,6 +46,11 @@
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>sqs</artifactId>
             <version>2.20.153</version>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>secretsmanager</artifactId>
+            <version>2.20.155</version>
         </dependency>
 
         <dependency>
@@ -70,6 +85,11 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>secretsmanager</artifactId>
+            <version>2.20.155</version>
         </dependency>
     </dependencies>
 
