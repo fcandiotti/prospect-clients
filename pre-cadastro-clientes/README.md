@@ -18,5 +18,5 @@ c) Implementar cobertura de 70% de testes unitários
 
 Ou se preferir, subir direto a imagem:
 
-*docker run -p 8080:8080  fcandiotti/precadastro:1.0.1*
+*docker run -p 8080:8080  fcandiotti/precadastro:1.0.2*
 
