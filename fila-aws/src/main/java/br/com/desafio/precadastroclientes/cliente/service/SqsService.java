@@ -1,30 +1,25 @@
-package br.com.desafio.precadastroclientes.cliente.aws;
+package br.com.desafio.precadastroclientes.cliente.service;
 
 import br.com.desafio.precadastroclientes.cliente.model.Cliente;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageResponse;
 import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
 
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class SqsService {
     private final SqsClient sqsClient;
     private final ObjectMapper objectMapper;
 
     @Value("${aws.sqs.queueUrl}")
     private String queueUrl;
-
-    @Autowired
-    public SqsService(SqsClient sqsClient, ObjectMapper objectMapper) {
-        this.sqsClient = sqsClient;
-        this.objectMapper = objectMapper;
-    }
 
     public void sendMessage(Cliente dto)  {
         try {
@@ -33,7 +28,7 @@ public class SqsService {
                     .queueUrl(queueUrl)
                     .messageBody(messageBody)
                     .build());
-            log.info("Enviando dados do cliente para fila {}", dto.getId());
+            log.info("Enviando dados do cliente para fila {}", dto.getUuid());
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Erro ao converter DTO para JSON", e);
         }
