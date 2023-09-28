@@ -19,6 +19,6 @@ c) planeje as atividades técnicas para o desenvolvimento da solução
 ---
 
 ### Informaçoes: 
-1) IP para teste: http://44.211.42.141:8080/endpoints (Collection do swagger para importar no postman está na primeira linha deste readme)
+1) IP para teste: http://44.211.42.141:8080 (Collection do swagger para importar no postman está na primeira linha deste readme)
 2) Esta aplicação não tem imagem no docker pois a mesma ja se encontra hospedada em um EC2.
 3) As credenciais usadas na AWS são as fornecidas pela ADA.
