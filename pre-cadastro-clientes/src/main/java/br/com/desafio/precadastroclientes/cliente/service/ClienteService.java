@@ -1,59 +1,63 @@
 package br.com.desafio.precadastroclientes.cliente.service;
 
+import br.com.desafio.precadastroclientes.cliente.enums.ETipoCliente;
+import br.com.desafio.precadastroclientes.cliente.exception.ClienteException;
 import br.com.desafio.precadastroclientes.cliente.model.Cliente;
-import br.com.desafio.precadastroclientes.cliente.model.dto.*;
+import br.com.desafio.precadastroclientes.cliente.model.dto.ClienteRequest;
+import br.com.desafio.precadastroclientes.cliente.model.dto.ClienteResponse;
 import br.com.desafio.precadastroclientes.cliente.repository.ClienteRepository;
-import org.hibernate.boot.beanvalidation.IntegrationException;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class ClienteService {
 
     private final ClienteRepository clienteRepository;
 
-    @Autowired
-    public ClienteService(ClienteRepository clienteRepository) {
-        this.clienteRepository = clienteRepository;
+    private Cliente getById(Long id) {
+        return clienteRepository.findById(id).
+                orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado."));
     }
 
-    public ClientePessoaFisicaResponse criarClientePf(ClientePessoaFisicaRequest clienteRequest) {
-        validarCpf(clienteRequest);
-        var pf = Cliente.of(clienteRequest);
-        clienteRepository.save(pf);
+    @Transactional
+    public ClienteResponse criarCliente(ClienteRequest clienteRequest) {
+        var tipoCliente = clienteRequest.getTipoCliente();
+        if (tipoCliente == ETipoCliente.PESSOA_JURIDICA) {
+            validarCnpj(clienteRequest);
+        } else if (tipoCliente == ETipoCliente.PESSOA_FISICA) {
+            validarCpf(clienteRequest);
+        } else {
+            throw new ClienteException("Tipo de cliente não suportado");
+        }
 
-        return ClientePessoaFisicaResponse.of(clienteRequest);
+        var cliente = Cliente.of(clienteRequest);
+        clienteRepository.save(cliente);
+        log.info("Cliente criado com sucesso. UUID: {}", cliente.getUuid());
+        return ClienteResponse.of(clienteRequest);
     }
 
-    public ClientePessoaJuridicaResponse criarClientePj(ClientePessoaJuridicaRequest clienteRequest) {
-        validarCnpj(clienteRequest);
-        var pf = Cliente.of(clienteRequest);
-        clienteRepository.save(pf);
+    @Transactional
+    public ClienteResponse atualizarCliente(Long id, ClienteRequest clienteRequest) {
+        var clienteExistente = this.getById(id);
+        if (clienteRequest.getTipoCliente() == ETipoCliente.PESSOA_JURIDICA) {
+            this.validarCnpjParaAtualizacao(clienteRequest, clienteExistente);
+        } else {
+            this.validarCpfParaAtualizacao(clienteRequest, clienteExistente);
+        }
 
-        return ClientePessoaJuridicaResponse.of(clienteRequest);
-    }
-
-    public ClientePessoaJuridicaResponse atualizarClientePj(Long id, ClientePessoaJuridicaRequest clienteRequest) {
-        var clienteExistente = clienteRepository.findById(id).
-                orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
-        validarCnpjParaAtualizacao(clienteRequest, clienteExistente);
-        clienteExistente.atualizarClientePj(clienteRequest);
+        clienteExistente.atualizarCliente(clienteRequest);
         clienteRepository.save(clienteExistente);
-
-        return ClientePessoaJuridicaResponse.of(clienteExistente);
-    }
-
-    public ClientePessoaFisicaResponse atualizarClientePf(Long id, ClientePessoaFisicaRequest clienteRequest) {
-        var clienteExistente = clienteRepository.findById(id).
-                orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
-        validarCpfParaAtualizacao(clienteRequest, clienteExistente);
-        clienteExistente.atualizarClientePf(clienteRequest);
-        clienteRepository.save(clienteExistente);
-
-        return ClientePessoaFisicaResponse.of(clienteExistente);
+        log.info("Cliente UUID: {} atualizado com sucesso.", clienteExistente.getUuid());
+        return ClienteResponse.of(clienteExistente);
     }
 
     public List<ClienteResponse> buscarTodosClientes() {
@@ -63,38 +67,44 @@ public class ClienteService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteById(Long id) {
         if (!clienteRepository.existsById(id)) {
-            throw new RuntimeException("Cliente não encontrado.");
+            throw new EntityNotFoundException("Cliente não encontrado.");
         }
         clienteRepository.deleteById(id);
+        log.info("Cliente deletado com sucesso.");
     }
 
-    private void validarCpfParaAtualizacao(ClientePessoaFisicaRequest clienteRequest, Cliente clienteExistente) {
-        clienteRepository.findByCpf(clienteRequest.getCpf()).ifPresent(clienteComCnpjExistente -> {
+    private void validarCpfParaAtualizacao(ClienteRequest clienteRequest, Cliente clienteExistente) {
+        log.debug("Validando CPF para atualização: {}", clienteRequest.getCpfPessoa());
+        clienteRepository.findByCpfPessoa(clienteRequest.getCpfPessoa()).ifPresent(clienteComCnpjExistente -> {
             if (!clienteComCnpjExistente.getId().equals(clienteExistente.getId())) {
-                throw new IntegrationException("CPF já cadastrado por outro cliente.");
+                throw new ClienteException("CPF já cadastrado por outro cliente.");
             }
         });
     }
 
-    private void validarCnpjParaAtualizacao(ClientePessoaJuridicaRequest clienteRequest, Cliente clienteExistente) {
+    private void validarCnpjParaAtualizacao(ClienteRequest clienteRequest, Cliente clienteExistente) {
+        log.debug("Validando CNPJ para atualização: {}", clienteRequest.getCnpj());
         clienteRepository.findByCnpj(clienteRequest.getCnpj()).ifPresent(clienteComCnpjExistente -> {
             if (!clienteComCnpjExistente.getId().equals(clienteExistente.getId())) {
-                throw new IntegrationException("CNPJ já cadastrado por outro cliente.");
+                throw new ClienteException("CNPJ já cadastrado por outro cliente.");
             }
         });
     }
 
-    private void validarCnpj(ClientePessoaJuridicaRequest clienteRequest) {
-        if (clienteRepository.findByCnpj(clienteRequest.getCnpj()).isPresent()) {
-            throw new IntegrationException("CNPJ já cadastrado.");
+    private void validarCnpj(ClienteRequest clienteRequest) {
+        log.info("Validando CNPJ pra criação de cliente.");
+        if (clienteRepository.existsByCnpj(clienteRequest.getCnpj())) {
+            throw new ClienteException("CNPJ já cadastrado.");
         }
     }
 
-    private void validarCpf(ClientePessoaFisicaRequest clienteRequest) {
-        if (clienteRepository.findByCpf(clienteRequest.getCpf()).isPresent()) {
-            throw new IntegrationException("CPF já cadastrado.");
+    private void validarCpf(ClienteRequest clienteRequest) {
+        log.info("Validando CPF pra criação de cliente.");
+        if (clienteRepository.existsByCpfPessoa(clienteRequest.getCpfPessoa())) {
+            throw new ClienteException("CPF já cadastrado.");
         }
     }
 }

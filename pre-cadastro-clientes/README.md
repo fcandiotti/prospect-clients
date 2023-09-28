@@ -11,7 +11,7 @@ a) modelar uma API REST com operações que possibilitem a criação, alteraçã
 * Respeitando as validações propostas.
 
 c) Implementar cobertura de 70% de testes unitários
-- Cobertura de 83% segundo IntelliJ
+- Cobertura de 79% segundo IntelliJ
 
 ### Subi a imagem do projeto para o docker hub, para facilitar na hora de executar o projeto, basta o diretorio raiz e executar: 
 *docker-compose up* 
