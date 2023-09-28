@@ -4,14 +4,14 @@ import br.com.desafio.precadastroclientes.cliente.model.dto.ClienteResponse;
 import br.com.desafio.precadastroclientes.cliente.service.SqsService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+@Slf4j
 @RestController
 @RequestMapping("api/fila-clientes")
 @RequiredArgsConstructor
@@ -21,12 +21,20 @@ public class SqsController {
     private final ObjectMapper objectMapper;
 
     @GetMapping("/consume-sqs")
-    public List<ClienteResponse> consumeMessagesFromSqs() {
+    public ClienteResponse consumeMessagesFromSqs() {
         var response = sqsService.receiveMessages();
-        var sqsMessages = response.messages();
-        return sqsMessages.stream()
-                .map(msg -> deserializeMessageBodyToDto(msg.body()))
-                .collect(Collectors.toList());
+
+        if (response.messages().isEmpty()) {
+            throw new EntityNotFoundException("Nenhuma mensagem disponível na fila.");
+        }
+
+        var msg = response.messages().get(0);
+        var clienteResponse = deserializeMessageBodyToDto(msg.body());
+        log.info("Mensagem com ReceiptHandle {} foi consumida.", msg.receiptHandle());
+
+        sqsService.deleteMessage(msg);
+
+        return clienteResponse;
     }
 
     private ClienteResponse deserializeMessageBodyToDto(String messageBody) {

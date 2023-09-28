@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sqs.SqsClient;
+import software.amazon.awssdk.services.sqs.model.DeleteMessageRequest;
+import software.amazon.awssdk.services.sqs.model.Message;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageResponse;
 import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
 
@@ -37,5 +39,14 @@ public class SqsService {
     public ReceiveMessageResponse receiveMessages() {
         return sqsClient
                 .receiveMessage(builder -> builder.queueUrl(queueUrl).maxNumberOfMessages(1));
+    }
+
+    public void deleteMessage(Message message) {
+        var deleteRequest = DeleteMessageRequest.builder()
+                .queueUrl(queueUrl)
+                .receiptHandle(message.receiptHandle())
+                .build();
+        sqsClient.deleteMessage(deleteRequest);
+        log.info("Mensagem com ReceiptHandle {} foi excluída com sucesso.", message.receiptHandle());
     }
 }
