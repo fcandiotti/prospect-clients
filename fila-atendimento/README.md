@@ -5,7 +5,7 @@
 ---
 
 1) Toda vez que um novo cadastro ou uma alteração de cadastro for realizada no sistema, o cliente deverá entrar na última posição da fila de atendimento:
-- Concluído. Toda vez que um novo cadastro é realizado, ele é enviado para a fila (implementada com `java.util.Queue`), utilizando o modelo FIFO. Quando um usuário é atualizado, o mesmo é removido da fila e colocado na última posição.
+- Concluído. Toda vez que um novo cadastro é realizado, ele é enviado para a fila, utilizando o modelo FIFO. Quando um usuário é atualizado, o mesmo é removido da fila e colocado na última posição.
 
 ---
 
