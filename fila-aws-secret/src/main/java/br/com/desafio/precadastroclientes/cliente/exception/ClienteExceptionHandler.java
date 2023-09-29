@@ -18,23 +18,23 @@ public class ClienteExceptionHandler {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(EntityNotFoundException.class)
-    public ErrorRespose handleEntityNotFound(EntityNotFoundException ex) {
+    public ErrorResponse handleEntityNotFound(EntityNotFoundException ex) {
         log.error(ex.getMessage());
-        return new ErrorRespose(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+        return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
     }
 
     @ResponseStatus(HttpStatus.PRECONDITION_FAILED)
     @ExceptionHandler(ClienteException.class)
-    public ErrorRespose handleClienteException(ClienteException ex) {
+    public ErrorResponse handleClienteException(ClienteException ex) {
         log.error(ex.getMessage());
-        return new ErrorRespose(HttpStatus.PRECONDITION_FAILED.value(), ex.getMessage());
+        return new ErrorResponse(HttpStatus.PRECONDITION_FAILED.value(), ex.getMessage());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(RuntimeException.class)
-    public ErrorRespose handleRuntimeException(RuntimeException ex) {
+    public ErrorResponse handleRuntimeException(RuntimeException ex) {
         log.error(ex.getMessage());
-        return new ErrorRespose(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
+        return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

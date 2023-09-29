@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ErrorRespose {
+public class ErrorResponse {
 
     private int status;
     private String message;
