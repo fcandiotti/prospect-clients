@@ -1,4 +1,4 @@
-package fila;
+package br.com.desafio.precadastroclientes.fila;
 
 import br.com.desafio.precadastroclientes.cliente.fila.ClienteFila;
 import br.com.desafio.precadastroclientes.cliente.model.dto.ClienteResponse;
