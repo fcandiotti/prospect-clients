@@ -19,5 +19,5 @@
 
 Ou se preferir, subir direto a imagem:
 
-*docker run -p 8080:8080  fcandiotti/fila-atendimento:1.0.2*
+*docker run -p 8080:8080  fcandiotti/fila-atendimento:1.0.3*
 
