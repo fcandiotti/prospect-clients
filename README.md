@@ -4,7 +4,7 @@ Neste repositório, encontra-se o cumprimento de diversos desafios relacionados,
 
 ## Sobre os Desafios
 
-Os desafios estão divididos em projetos individuais. Cada projeto possui seu próprio `README.md` detalhando informações específicas sobre sua implementação e requisitos. Os projetos foram nomeados genericamente aqui para orientação, mas podem ser renomeados conforme o desenvolvimento real.
+Os desafios estão divididos em projetos individuais. Cada projeto possui seu próprio `README.md` detalhando informações específicas sobre sua implementação e requisitos. Os projetos foram nomeados aqui para orientação.
 
 ### Desafio 1: Pré-cadastro de clientes
 
